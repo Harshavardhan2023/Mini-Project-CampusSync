@@ -49,24 +49,16 @@ def create_app():
     init_db(app)
     
     # Configure CORS to allow specific origins and methods
-    CORS(app, resources={
-        r"/*": {
-            "origins": [
-                "http://localhost:3000", 
-                "https://mini-project-campus-sync-1yug-gjauyhdaq-campus-sync.vercel.app", 
-                "https://mini-project-campus-sync.vercel.app",
-                "https://mini-project-campus-sync-1yug-rka211sv1-campus-sync.vercel.app",
-                "*"  # Allow all origins temporarily for debugging
-            ],
-            "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-            "allow_headers": ["Content-Type", "Authorization", "X-Requested-With"],
-            "supports_credentials": True
-        }
-    })
+    # We'll let our middleware handle the detailed CORS configuration
+    # This provides default behavior but our middleware will have the final say
+    CORS(app)
     
-    # Apply CORS headers to all responses
-    from .middleware import add_cors_headers
-    app.after_request(add_cors_headers)
+    # Add a route to handle preflight OPTIONS requests specifically
+    @app.route('/', defaults={'path': ''}, methods=['OPTIONS'])
+    @app.route('/<path:path>', methods=['OPTIONS'])
+    def options_handler(path):
+        response = app.make_default_options_response()
+        return response
     
     # Request logging middleware
     @app.before_request
@@ -74,11 +66,20 @@ def create_app():
         app.logger.info(f"Request: {request.method} {request.path} from {request.remote_addr}")
         request.start_time = time.time()
     
+    # Import middleware - CORS headers must be applied first
+    from .middleware import add_cors_headers
+    
+    # Apply CORS headers first, then log response info
     @app.after_request
-    def log_response_info(response):
+    def handle_response(response):
+        # First add CORS headers
+        response = add_cors_headers(response)
+        
+        # Then log response info
         if hasattr(request, 'start_time'):
             duration = time.time() - request.start_time
             app.logger.info(f"Response: {response.status_code} in {duration:.4f}s")
+            
         return response
     
     # Register blueprints

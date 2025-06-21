@@ -14,8 +14,16 @@ logger = logging.getLogger(__name__)
 
 def add_cors_headers(response):
     """Add CORS headers to all responses"""
-    # Check if we're in debug or production
-    response.headers['Access-Control-Allow-Origin'] = '*'  # Allow all origins for now
+    # Get the origin from the request
+    origin = request.headers.get('Origin')
+    
+    # Always allow the request origin - this is the most permissive setting
+    # but ensures all frontend deployments can connect
+    if origin:
+        response.headers['Access-Control-Allow-Origin'] = origin
+    else:
+        response.headers['Access-Control-Allow-Origin'] = '*'
+        
     response.headers['Access-Control-Allow-Methods'] = 'GET, POST, PUT, DELETE, OPTIONS'
     response.headers['Access-Control-Allow-Headers'] = 'Content-Type, Authorization, X-Requested-With'
     response.headers['Access-Control-Allow-Credentials'] = 'true'
