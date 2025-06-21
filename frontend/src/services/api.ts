@@ -1,6 +1,5 @@
 // API service for handling all backend requests
-// Use environment variable or fallback to localhost for development
-const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
+import { API_URL, API_BASE_URL } from '../config';
 
 // Flag to determine if we should use mock data (when backend is not available)
 const USE_MOCK_DATA = false; // Set to false to use the real backend

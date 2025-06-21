@@ -372,7 +372,7 @@ const Resources: React.FC = () => {
                         }
                         
                         // Get API base URL
-                        const apiUrl = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
+                        const apiUrl = process.env.REACT_APP_API_URL || 'https://mini-project-campussync-2-8qon.onrender.com/api';
                         
                         // Create the direct download URL and open it in a new tab
                         const baseUrl = apiUrl.replace('/v1', '');  // Remove v1 if present

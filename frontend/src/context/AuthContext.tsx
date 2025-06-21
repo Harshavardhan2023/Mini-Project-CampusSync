@@ -2,7 +2,7 @@ import React, { createContext, useState, useEffect, useContext } from 'react';
 import { userAPI } from '../services/api';
 
 // API URL for direct fetch calls
-const API_URL = 'http://localhost:5000/api';
+const API_URL = 'https://mini-project-campussync-2-8qon.onrender.com/api';
 
 interface User {
   id: string;

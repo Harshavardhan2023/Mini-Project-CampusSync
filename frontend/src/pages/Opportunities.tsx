@@ -119,7 +119,7 @@ const Opportunities: React.FC = () => {
       }
       
       // Call the API to delete the opportunity
-      const response = await fetch(`http://localhost:5000/api/opportunities/${opportunityId}`, {
+      const response = await fetch(`https://mini-project-campussync-2-8qon.onrender.com/api/opportunities/${opportunityId}`, {
         method: 'DELETE',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -253,7 +253,7 @@ const Opportunities: React.FC = () => {
       console.log('Submitting opportunity data:', opportunityData);
       
       // Call the API to post the opportunity
-      const response = await fetch('http://localhost:5000/api/opportunities', {
+      const response = await fetch('https://mini-project-campussync-2-8qon.onrender.com/api/opportunities', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

@@ -108,7 +108,7 @@ const ProfileDropdown: React.FC<ProfileDropdownProps> = ({ user }) => {
       });
       
       // Open and send the request
-      xhr.open('POST', `http://localhost:5000/api/users/${user.id}/profile-image`, true);
+      xhr.open('POST', `https://mini-project-campussync-2-8qon.onrender.com/api/users/${user.id}/profile-image`, true);
       xhr.setRequestHeader('Authorization', `Bearer ${token}`);
       xhr.send(formData);
       
