@@ -25,6 +25,17 @@ def serve_frontend(path):
         return send_from_directory(frontend_build_dir, path)
     return app.send_static_file('test.html')  # Fallback to test page
 
+# Serve root path from the frontend if available, otherwise use the API index
+# Changed from '/' to '/home' to avoid route conflict with app/__init__.py
+@app.route('/home', endpoint='frontend_root')
+def frontend_root():
+    frontend_build_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'frontend', 'build')
+    index_file = os.path.join(frontend_build_dir, 'index.html')
+    if os.path.exists(index_file):
+        return send_from_directory(frontend_build_dir, 'index.html')
+    # Delegate to the API index endpoint
+    return redirect('/api')
+
 if __name__ == "__main__":
     # Get configuration from environment variables
     host = os.getenv("FLASK_HOST", "0.0.0.0")

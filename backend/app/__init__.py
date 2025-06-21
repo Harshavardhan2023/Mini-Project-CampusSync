@@ -1,6 +1,6 @@
 # app/__init__.py
 
-from flask import Flask, jsonify, request, send_from_directory
+from flask import Flask, jsonify, request
 from flask_cors import CORS
 from dotenv import load_dotenv
 import os
@@ -48,11 +48,10 @@ def create_app():
     mongo.init_app(app)
     init_db(app)
     
-    # Configure CORS to allow specific origins
-    allowed_origins = os.environ.get('ALLOWED_ORIGINS', '*').split(',')
+    # Configure CORS to allow specific origins and methods
     CORS(app, resources={
         r"/*": {
-            "origins": allowed_origins,  # Use environment variable or default to all
+            "origins": ["http://localhost:3000", "https://mini-project-campus-sync-1yug-gjauyhdaq-campus-sync.vercel.app", "https://mini-project-campus-sync.vercel.app"],
             "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
             "allow_headers": ["Content-Type", "Authorization", "X-Requested-With"],
             "supports_credentials": True
@@ -109,9 +108,9 @@ def create_app():
     app.register_blueprint(summarize_bp)
     app.register_blueprint(files_bp)  # Register the files blueprint
     
-    # Root endpoint
-    @app.route('/')
-    def index():
+    # API Root endpoint
+    @app.route('/api')
+    def api_index():
         api_version = app.config.get('API_VERSION', 'v1')
         return jsonify({
             'message': 'Welcome to CampusConnect API',
@@ -202,20 +201,5 @@ def create_app():
         })
         response.status_code = 500
         return response
-    
-    # Add a health check endpoint
-    @app.route('/api/v1/health', methods=['GET'])
-    def health_check():
-        return jsonify({
-            'status': 'healthy',
-            'message': 'CampusSync API is running',
-            'version': '1.0.0',
-            'timestamp': time.time()
-        })
-    
-    # Add a route to serve the test page
-    @app.route('/', methods=['GET'])
-    def index():
-        return send_from_directory(static_folder, 'test.html')
     
     return app

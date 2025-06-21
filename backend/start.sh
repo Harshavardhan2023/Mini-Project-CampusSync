@@ -1,9 +1,11 @@
 #!/bin/bash
-# This file tells Render how to run the Flask application
+# Script to start the application with Gunicorn on Render
 
-# Run the application with Gunicorn
-# - workers: number of worker processes
-# - threads: number of threads per worker
-# - timeout: worker timeout in seconds
-# - bind: IP:PORT to bind to
-exec gunicorn --workers=2 --threads=2 --timeout=60 --bind=0.0.0.0:$PORT "run:create_app()"
+# Make sure the script is executable
+# chmod +x start.sh
+
+# Set default port if not provided
+PORT=${PORT:-5000}
+
+# Start Gunicorn with the create_app() function
+exec gunicorn --workers=2 --threads=2 --timeout=60 --bind=0.0.0.0:$PORT "run:app"
