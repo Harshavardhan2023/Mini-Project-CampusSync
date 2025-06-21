@@ -81,6 +81,36 @@ def create_app():
             app.logger.info(f"Response: {response.status_code} in {duration:.4f}s")
             
         return response
+        
+    # Create additional routes for common user endpoints without the /api prefix
+    @app.route('/users/login', methods=['POST'])
+    def redirect_login():
+        # Forward the request to the proper API route
+        from .routes.users import login
+        return login()
+        
+    @app.route('/users/register', methods=['POST'])
+    def redirect_register():
+        from .routes.users import register
+        return register()
+        
+    @app.route('/users/verify', methods=['POST'])
+    def redirect_verify():
+        from .routes.users import verify_email
+        return verify_email()
+        
+    @app.route('/users/profile', methods=['GET', 'PUT'])
+    def redirect_profile():
+        from .routes.users import get_profile, update_profile
+        if request.method == 'GET':
+            return get_profile()
+        else:
+            return update_profile()
+            
+    @app.route('/users/forgot-password/initiate', methods=['POST'])
+    def redirect_forgot_password_initiate():
+        from .routes.users import initiate_forgot_password
+        return initiate_forgot_password()
     
     # Register blueprints
     from .routes.users import users_bp

@@ -151,3 +151,25 @@ def error_handler(app):
             'message': 'An unexpected error occurred',
             'status_code': 500
         }), 500
+
+# Add a URL prefix middleware function to handle API requests
+def handle_url_prefixes():
+    """
+    Middleware to handle URL prefixes for API requests.
+    This allows the API to be accessed with or without the /api prefix.
+    """
+    def middleware():
+        # If the path starts with /users/ but not /api/users/, rewrite it to /api/users/
+        path = request.path
+        if path.startswith('/users/') and not path.startswith('/api/users/'):
+            # Create a new path with the /api prefix
+            new_path = f'/api{path}'
+            logger.info(f"Redirecting request from {path} to {new_path}")
+            
+            # Redirect to the new path
+            return current_app.full_dispatch_request()
+        
+        # Continue with the request
+        return None
+    
+    return middleware
