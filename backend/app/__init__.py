@@ -51,12 +51,22 @@ def create_app():
     # Configure CORS to allow specific origins and methods
     CORS(app, resources={
         r"/*": {
-            "origins": ["http://localhost:3000", "https://mini-project-campus-sync-1yug-gjauyhdaq-campus-sync.vercel.app", "https://mini-project-campus-sync.vercel.app"],
+            "origins": [
+                "http://localhost:3000", 
+                "https://mini-project-campus-sync-1yug-gjauyhdaq-campus-sync.vercel.app", 
+                "https://mini-project-campus-sync.vercel.app",
+                "https://mini-project-campus-sync-1yug-rka211sv1-campus-sync.vercel.app",
+                "*"  # Allow all origins temporarily for debugging
+            ],
             "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
             "allow_headers": ["Content-Type", "Authorization", "X-Requested-With"],
             "supports_credentials": True
         }
     })
+    
+    # Apply CORS headers to all responses
+    from .middleware import add_cors_headers
+    app.after_request(add_cors_headers)
     
     # Request logging middleware
     @app.before_request

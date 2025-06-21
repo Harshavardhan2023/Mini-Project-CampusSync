@@ -26,9 +26,9 @@ def serve_frontend(path):
     return app.send_static_file('test.html')  # Fallback to test page
 
 # Serve root path from the frontend if available, otherwise use the API index
-# Changed from '/' to '/home' to avoid route conflict with app/__init__.py
-@app.route('/home', endpoint='frontend_root')
-def frontend_root():
+# Added unique endpoint to avoid conflicts
+@app.route('/', endpoint='frontend_index')
+def frontend_index():
     frontend_build_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'frontend', 'build')
     index_file = os.path.join(frontend_build_dir, 'index.html')
     if os.path.exists(index_file):

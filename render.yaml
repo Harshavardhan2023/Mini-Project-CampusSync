@@ -1,26 +1,32 @@
-services:
-  # Backend API service
-  - name: campusconnect-backend
-    type: web
+services:  # Backend API Service
+  - type: web
+    name: campussync-backend-api
     runtime: python
-    buildCommand: cd backend && pip install -r requirements.txt
-    startCommand: cd backend && python run.py
+    plan: free
+    rootDir: backend
+    buildCommand: pip install -r requirements.txt
+    startCommand: ./start.sh
     envVars:
-      - key: MONGODB_URI
-        sync: false # This means you'll set this manually in the Render dashboard
-      - key: JWT_SECRET_KEY
-        sync: false
-      - key: FRONTEND_URL
-        sync: false # You'll set this to your deployed frontend URL
       - key: PORT
-        value: 8000
-
-  # Frontend React app
-  - name: campusconnect-frontend
-    type: web
+        value: 5000
+      - key: MONGO_URI
+        sync: false
+      - key: JWT_SECRET
+        sync: false
+      - key: OPENAI_API_KEY
+        sync: false
+  # Frontend Web Service
+  - type: web
+    name: campussync-frontend
     runtime: static
-    buildCommand: cd frontend && npm install && npm run build
-    staticPublishPath: frontend/build
+    plan: free
+    rootDir: frontend
+    buildCommand: npm install && npm run build
+    staticPublishPath: build
     envVars:
       - key: REACT_APP_API_URL
-        sync: false # You'll set this to your deployed backend URL
+        fromService:
+          name: campussync-backend-api
+          type: web
+          envVarKey: RENDER_EXTERNAL_URL
+          append: /api

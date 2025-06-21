@@ -6,11 +6,20 @@ Provides error handling, request validation, and other middleware functionality
 import time
 import logging
 from functools import wraps
-from flask import request, jsonify, g, current_app
+from flask import request, jsonify, g, current_app, make_response
 import jwt
 from werkzeug.exceptions import BadRequest, Unauthorized, Forbidden
 
 logger = logging.getLogger(__name__)
+
+def add_cors_headers(response):
+    """Add CORS headers to all responses"""
+    # Check if we're in debug or production
+    response.headers['Access-Control-Allow-Origin'] = '*'  # Allow all origins for now
+    response.headers['Access-Control-Allow-Methods'] = 'GET, POST, PUT, DELETE, OPTIONS'
+    response.headers['Access-Control-Allow-Headers'] = 'Content-Type, Authorization, X-Requested-With'
+    response.headers['Access-Control-Allow-Credentials'] = 'true'
+    return response
 
 def request_logger(f):
     """Middleware to log request details"""
